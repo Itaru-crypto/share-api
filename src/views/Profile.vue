@@ -28,8 +28,8 @@ import Message from "../components/Message";
 export default {
   data(){
     return{
-      active: True,
-      name: "Taro",
+      active: true,
+      name: "太郎",
       profile: "私は太郎です",
     };
   },
