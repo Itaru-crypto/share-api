@@ -80,7 +80,58 @@ export default {
             });
           });
       }
+    },
+    del(index){
+      axios
+        .delete(
+          "herokuのURL/api/shares"+
+          this.shares[index].item.id
+        )
+        .then((response)=>{
+          console.log(response);
+          this.$router.go({
+            path: this.$router.currentRoute.path,
+            force: true,
+          });
+        });
+    },
+    async getShares(){
+      let data = [];
+      let shares = await axios.get(
+        "herokuのURL/api/shares"
+      );
+      for (let i = 0; i < shares.data.data.length; i++){
+        await axios 
+          .get(
+            "herokuのURL/api/shares" +
+              shares.data.data[i].id
+          )
+          .then((response) => {
+            if (this.$route.name == "profile"){
+            if (response.data.item.user_id == this.$store.state.user.id) {
+              data.push(response.data);
+            }
+          } else if (this.$route.name == "detail"){
+            if (response.data.item.id == this.id){
+              data.push(response.data);
+            }
+          } else {
+            data.push(response.data)
+          }
+        });
+      }
+      this.shares = data;
+      console.log(this.shares);
+    },
+  },
+  created(){
+    if (this.$route.name === "home"){
+      this.path = false;
     }
+    if (this.$route.name === "detail"){
+      this.profile = false;
+    }  
+    this.getShares();
   }
 }
 </script>
